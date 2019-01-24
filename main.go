@@ -18,6 +18,10 @@ func main() {
 	}
 	B.Print()
 	fmt.Println("")
+
 	C := mult(A, B)
 	C.Print()
+	fmt.Println("")
+
+	fmt.Println("The determinant of C is", det(C))
 }

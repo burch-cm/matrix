@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 )
@@ -77,3 +78,23 @@ func mult(m, n Matrix) Matrix {
 	}
 	return out
 }
+
+func (m *Matrix) isSquare() bool {
+	nrow := len(m)
+	ncol := len(m[0])
+	if nrow != ncol {
+		return false
+	} else {
+		return true
+	}
+}
+
+/*func det(m Matrix) (float64, error) {
+	if isSquare != true {
+		return 0, errors.New("Matrix is not square.")
+	}
+	var r float64
+	r = m[0][0]*m[1][1] - m[1][0]*m[0][1]
+	return r
+}
+*/
