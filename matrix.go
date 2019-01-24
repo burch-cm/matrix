@@ -12,7 +12,7 @@ func (m Matrix) T() Matrix {
 		nrow: len(m),
 		ncol: len(m[0]),
 	}
-	out := fMatrix(mdim.ncol, mdim.nrow)
+	out := makeMatrix(mdim.ncol, mdim.nrow)
 	for i := 0; i < mdim.nrow; i++ {
 		for j := 0; j < mdim.ncol; j++ {
 			out[j][i] = m[i][j]
@@ -29,7 +29,15 @@ func vsum(s []float64) float64 {
 	return out
 }
 
-func fMatrix(nrow, ncol int) Matrix {
+func vmult(a, b []float64) []float64 {
+	var out []float64
+	for i := range a {
+		out = append(out, a[i]*b[i])
+	}
+	return out
+}
+
+func makeMatrix(nrow, ncol int) Matrix {
 	var out Matrix
 	for i := 0; i < nrow; i++ {
 		r := []float64{}
@@ -46,28 +54,26 @@ type MatrixDim struct {
 	ncol int
 }
 
-func (m Matrix) mult(n Matrix) Matrix {
-	mdim := MatrixDim{
-		nrow: len(m),
-		ncol: len(m[0]),
-	}
-
-	var row []float64
-	var out Matrix
-
-	for i := 0; i < mdim.nrow; i++ {
-		var s []float64
-		for j := 0; j < mdim.ncol; j++ {
-			s = append(s, m[i][j]*n[j][i])
-		}
-		row = append(row, vsum(s))
-		out = append(out, row)
-	}
-	return out
-}
-
 func (m Matrix) Print() {
 	for _, v := range m {
 		fmt.Println(v)
 	}
+}
+
+func mult(m, n Matrix) Matrix {
+	t := n.T()
+	mdim := MatrixDim{
+		nrow: len(m),
+		ncol: len(m[0]),
+	}
+	var out Matrix
+	for i := 0; i < mdim.nrow; i++ {
+		outrow := []float64{}
+		for j := 0; j < mdim.nrow; j++ {
+			row := vmult(m[i], t[j])
+			outrow = append(outrow, vsum(row))
+		}
+		out = append(out, outrow)
+	}
+	return out
 }
